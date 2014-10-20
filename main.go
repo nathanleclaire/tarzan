@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"github.com/codegangsta/negroni"
 	"github.com/davecgh/go-spew/spew"
@@ -20,7 +21,8 @@ type GithubPushEventPayload struct {
 		} `json:"config"`
 	} `json:"hook"`
 	Repository struct {
-		HtmlUrl string `json:"html_url"`
+		FullName string `json:"full_name"`
+		HtmlUrl  string `json:"html_url"`
 	} `json:"repository"`
 }
 
@@ -32,7 +34,7 @@ func main() {
 
 	_, err := apiClient.NewClient(dockerHost)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating client!!", err)
+		fmt.Fprintln(os.Stderr, "Error creating client!!", err)
 	}
 
 	r := render.New(render.Options{})
@@ -48,6 +50,20 @@ func main() {
 			fmt.Fprintln(os.Stderr, "Error decoding Github push payload:", err)
 		}
 		spew.Dump(payload)
+		repoPath := fmt.Sprintf("./repos/%s", payload.Repository.FullName)
+		repoUrl := payload.Repository.HtmlUrl
+		gitCmd := exec.Command("git")
+		if _, err := os.Stat(repoPath); err != nil {
+			if os.IsNotExist(err) {
+				gitCmd = exec.Command("git", "clone", "--recursive", repoUrl, repoPath)
+			} else {
+				gitCmd = exec.Command(fmt.Sprintf("cd %s && git pull && cd -", repoPath))
+			}
+		}
+
+		if err := gitCmd.Run(); err != nil {
+			fmt.Fprintln(os.Stderr, "Error attempting git command on repo", payload.Repository.FullName, err)
+		}
 		r.JSON(w, http.StatusOK, "")
 	}).Methods("POST")
 
