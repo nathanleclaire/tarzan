@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"os/exec"
 
 	"github.com/codegangsta/negroni"
 	"github.com/davecgh/go-spew/spew"
 	apiClient "github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
+	libgit "github.com/libgit2/git2go"
 	"github.com/unrolled/render"
 )
 
@@ -52,18 +52,9 @@ func main() {
 		spew.Dump(payload)
 		repoPath := fmt.Sprintf("./repos/%s", payload.Repository.FullName)
 		repoUrl := payload.Repository.HtmlUrl
-		gitCmd := exec.Command("git")
-		if _, err := os.Stat(repoPath); err != nil {
-			if os.IsNotExist(err) {
-				gitCmd = exec.Command("git", "clone", "--recursive", repoUrl, repoPath)
-			} else {
-				gitCmd = exec.Command(fmt.Sprintf("cd %s && git pull && cd -", repoPath))
-			}
-		}
-
-		if err := gitCmd.Run(); err != nil {
-			fmt.Fprintln(os.Stderr, "Error attempting git command on repo", payload.Repository.FullName, err)
-		}
+		_, err = libgit.Clone(repoUrl, repoPath, &libgit.CloneOptions{
+			Bare: false,
+		})
 		r.JSON(w, http.StatusOK, "")
 	}).Methods("POST")
 

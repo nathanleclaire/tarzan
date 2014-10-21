@@ -25,6 +25,10 @@
 			"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
 		},
 		{
+			"ImportPath": "github.com/libgit2/git2go",
+			"Rev": "3b7cc1e97e62cf240f93a08983a0dc18bd31c54c"
+		},
+		{
 			"ImportPath": "github.com/unrolled/render",
 			"Rev": "cf57b1afa5d93abdbd356aad95d7c2720dad6d01"
 		}
