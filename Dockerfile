@@ -6,8 +6,6 @@ run apt-get install -y pkg-config
 # add vendored deps
 add ./Godeps/_workspace/src /go/src
 
-run cd /go/src/github.com/libgit2/git2go && make install
-
 # add src and setup for work on the project
 add . /go/src/github.com/nathanleclaire/tarzan
 workdir /go/src/github.com/nathanleclaire/tarzan

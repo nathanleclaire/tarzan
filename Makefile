@@ -14,7 +14,7 @@ cleanbinary:
 	rm -f tarzan
 
 cleancontainers:
-	docker rm $(DOCKER_CONTAINER)-deps 2>/dev/null || true
+	docker rm $(DOCKER_CONTAINER) $(DOCKER_CONTAINER)-deps 2>/dev/null || true
 
 deps: cleancontainers
 	docker run --name $(DOCKER_CONTAINER)-deps \

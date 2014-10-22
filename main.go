@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 
 	"github.com/codegangsta/negroni"
 	"github.com/davecgh/go-spew/spew"
 	apiClient "github.com/fsouza/go-dockerclient"
 	"github.com/gorilla/mux"
-	libgit "github.com/libgit2/git2go"
 	"github.com/unrolled/render"
 )
 
@@ -52,9 +52,22 @@ func main() {
 		spew.Dump(payload)
 		repoPath := fmt.Sprintf("./repos/%s", payload.Repository.FullName)
 		repoUrl := payload.Repository.HtmlUrl
-		_, err = libgit.Clone(repoUrl, repoPath, &libgit.CloneOptions{
-			Bare: false,
-		})
+		if _, err := os.Stat(repoPath); err != nil {
+			if os.IsNotExist(err) {
+				fmt.Println("Executing command", "git clone --recursive", repoUrl, repoPath)
+				if err := exec.Command("git", "clone", "--recursive", repoUrl, repoPath).Run(); err != nil {
+					fmt.Fprintln(os.Stderr, "Error cloning git repository:", err)
+				}
+			} else {
+				fmt.Fprintln(os.Stderr, "Error stat-ing directory", repoPath, ":", err)
+			}
+		} else {
+			os.Chdir(repoPath)
+			if err := exec.Command("git", "pull").Run(); err != nil {
+				fmt.Fprintln(os.Stderr, "Error pulling git repository:", err)
+			}
+		}
+
 		r.JSON(w, http.StatusOK, "")
 	}).Methods("POST")
 
