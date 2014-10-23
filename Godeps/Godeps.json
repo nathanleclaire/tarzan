@@ -1,6 +1,6 @@
 {
-	"ImportPath": "github.com/nathanleclaire/tarzan",
-	"GoVersion": "go1.3.3",
+	"ImportPath": "nathanleclaire/tarzan",
+	"GoVersion": "go1.2.1",
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/negroni",
@@ -12,11 +12,6 @@
 			"Rev": "3fdaf5cea8d23107b993d363e98992fa529dd713"
 		},
 		{
-			"ImportPath": "github.com/fsouza/go-dockerclient",
-			"Comment": "0.2.1-267-g15d2c6e",
-			"Rev": "15d2c6e3eb670c545d0af0604d7f9aff3871af04"
-		},
-		{
 			"ImportPath": "github.com/gorilla/context",
 			"Rev": "14f550f51af52180c2eefed15e5fd18d63c0a64a"
 		},
@@ -25,8 +20,8 @@
 			"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
 		},
 		{
-			"ImportPath": "github.com/libgit2/git2go",
-			"Rev": "3b7cc1e97e62cf240f93a08983a0dc18bd31c54c"
+			"ImportPath": "github.com/op/go-logging",
+			"Rev": "25891250fe98858f83506bc4411f82722d1be344"
 		},
 		{
 			"ImportPath": "github.com/unrolled/render",
