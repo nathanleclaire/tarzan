@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -23,6 +24,29 @@ type GithubPushEventPayload struct {
 		FullName string `json:"full_name"`
 		HtmlUrl  string `json:"html_url"`
 	} `json:"repository"`
+}
+
+func streamCommand(name string, args ...string) error {
+	cmd := exec.Command(name, args...)
+	cmdReader, err := cmd.StdoutPipe()
+	if err != nil {
+		return err
+	}
+	scanner := bufio.NewScanner(cmdReader)
+	go func() {
+		for scanner.Scan() {
+			fmt.Println(scanner.Text())
+		}
+	}()
+	err = cmd.Start()
+	if err != nil {
+		return err
+	}
+	err = cmd.Wait()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func main() {
@@ -72,14 +96,21 @@ func main() {
 			}
 
 			fmt.Println("Building docker image")
-			// TODO: make it so that user name can be different than on Github
-			if err := exec.Command("docker", "build", "-t", fullName, ".").Run(); err != nil {
+			err := streamCommand("docker", "build", "-t", fullName, ".")
+			if err != nil {
 				fmt.Fprintln(os.Stderr, "Error building docker image for", fullName, ":", err)
+				r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+					"Error": err,
+				})
 			}
 
 			fmt.Println("Pushing image back to Docker Hub")
-			if err := exec.Command("docker", "push", fullName).Run(); err != nil {
+			err = streamCommand("docker", "push", fullName)
+			if err != nil {
 				fmt.Fprintln(os.Stderr, "Error pushing docker image for", fullName, ":", err)
+				r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+					"Error": err,
+				})
 			}
 		}
 
