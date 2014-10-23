@@ -22,6 +22,15 @@ Therefore, it would be highly preferable to have a automated build robot which r
 
 # Getting Started
 
+# Working on `tarzan`
+
+If you want to hack on `tarzan` simply:
+
+- Make sure you have `docker` installed on your system (only Linux supported for now)
+- Run `make` in the project's root
+
+`tarzan` will compile with all needed dependencies (they are vendored) inside of a container and spit out a binary to the host.
+
 # FAQ
 
 #### Q: Is this compatible with Docker Hub's automated builds?
