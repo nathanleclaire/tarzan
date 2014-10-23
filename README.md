@@ -26,7 +26,7 @@ Therefore, it would be highly preferable to have a automated build robot which r
 
 #### Q: Is this compatible with Docker Hub's automated builds?
 
-Yes and no.  Docker Hub does not allow users to push to automated builds manually (using `docker push`), so it is impossible to use a official Automated Build Docker Hub repository as a backend for your `tarzan` build.  However, nothing is stopping you from creating _two_ Docker Hub repositories and using one as a normal automated build (allowing for 
+Yes and no.  Docker Hub does not allow users to push to automated builds manually (using `docker push`), so it is impossible to use a official Automated Build Docker Hub repository as a backend for your `tarzan` build.  However, nothing is stopping you from creating _two_ Docker Hub repositories (and two separate webhooks on Github) and using one as a normal automated build (allowing for `Dockerfile discovery`) and one as a `tarzan` build (allowing for fast build and pull). 
 
 #### Q: Can I run this using my own registry instead of using Docker Hub as a backend?
 
