@@ -11,6 +11,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/mux"
+	logging "github.com/op/go-logging"
 	"github.com/unrolled/render"
 )
 
@@ -26,6 +27,9 @@ type GithubPushEventPayload struct {
 	} `json:"repository"`
 }
 
+var log = logging.MustGetLogger("streamLog")
+var format = "%{color}%{time:15:04:05} ▶ %{color:reset} %{message}"
+
 func streamCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
 	cmdReader, err := cmd.StdoutPipe()
@@ -35,7 +39,7 @@ func streamCommand(name string, args ...string) error {
 	scanner := bufio.NewScanner(cmdReader)
 	go func() {
 		for scanner.Scan() {
-			fmt.Println(scanner.Text())
+			log.Notice(scanner.Text())
 		}
 	}()
 	err = cmd.Start()
@@ -50,6 +54,10 @@ func streamCommand(name string, args ...string) error {
 }
 
 func main() {
+	logBackend := logging.NewLogBackend(os.Stderr, "", 0)
+	logging.SetBackend(logBackend)
+	logging.SetFormatter(logging.MustStringFormatter(format))
+	logging.SetLevel(logging.NOTICE, "streamLog")
 	homeDir := os.Getenv("HOME")
 	if _, err := os.Stat(fmt.Sprintf("%s/.dockercfg", homeDir)); err != nil {
 		if os.IsNotExist(err) {
