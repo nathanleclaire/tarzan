@@ -9,7 +9,7 @@ tarzan
 
 [Automated Builds](http://docs.docker.com/docker-hub/builds/) are one of the best features of the [Docker Hub](https://hub.docker.com).  They allow you to automatically re-create your Docker images on source control push, and they allow other people to find the `Dockerfile` used to create your image to inspect and play around with before pulling, running, or modifying it.
 
-However, there is a big problem incorporating Automated Builds in a real-life workflow in the their current form. 
+However, there is a big problem incorporating Automated Builds in a real-life workflow in their current form. 
 
 - Because Docker's build robot runs Automated Builds using the `--no-cache` option (because the infrastructure costs of not doing so would be prohibitive), all of the image layers are created from scratch each time.  
 - This ends up in an Automated Build process which could take ten minutes or more (for an operation which would take seconds locally) and does not use the [Docker build cache](http://thenewstack.io/understanding-the-docker-cache-for-faster-builds/) (one of the best, most oft-cited features of `docker build`) at all.
