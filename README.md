@@ -42,7 +42,7 @@ curl https://github.com/nathanleclaire/tarzan/releases/v1.0/binary | sudo tee /u
 
 Alternatively, if you just want to try `tarzan` out the "fast and dirty" way, you could use a proxy tunneling service such as the excellent [ngrok](http://ngrok.com) and run it locally on your computer.
 
-Install `tarzan` on the worker box and start it.  Make sure that the port you're exposing on is visible to the outside world.  `80` will do fine if you plan on using this box only for `tarzan`.
+Install `tarzan` on the worker box and start it.  Make sure that the port you're exposing on is accessible to the outside world.  `80` will do fine if you plan on using this box only for `tarzan`.
 
 ```
 tarzan -p 80
