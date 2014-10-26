@@ -20,7 +20,68 @@ Therefore, it would be highly preferable to have a automated build robot which r
 
 `tarzan` is a naive implementation of such an automated build robot, written in [Go](http://golang.org).  I say it is "naive" because it doesn't attempt to do anything particularly clever (largely it shells out to `docker` commands) and is inherently meant to run on a single host (though this may change in the future).  However, it could still be turn out to be a useful tool for automating Docker image re-builds and deploys.
 
+# Installation
+
+You can install `tarzan` using either:
+
+```
+go get github.com/nathanleclaire/tarzan
+```
+
+Or install the (64bit Linux) binary directly using something like:
+
+```
+curl https://github.com/nathanleclaire/tarzan/releases/v1.0/binary | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x $(which tarzan) 
+```
+
 # Getting Started
+
+1. First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
+
+![](/static/img/createdroplet.png)
+
+Alternatively, if you just want to try `tarzan` out the "fast and dirty" way, you could use a proxy tunneling service such as the excellent [ngrok](http://ngrok.com) and run it locally on your computer.
+
+Install `tarzan` on the worker box and start it.  Make sure that the port you're exposing on is visible to the outside world.  `80` will do fine if you plan on using this box only for `tarzan`.
+
+```
+tarzan -p 80
+[log] Negroni listening on port 80...
+```
+
+Tarzan is also available to run as a Docker container (built, of course, using `tarzan`):
+
+```
+docker run -d -p 80:3000 nathanleclaire/tarzan
+```
+
+On Github, click on "Settings" (the bottom-most element) in the right hand panel, then click on "Webhooks & Services".
+
+![](/static/img/webhooks.png)
+
+Click the "Add webhook" button, verify your identity, and paste the IP address of your `tarzan` server at the `/build` endpoint in the URL box.  The default secret is `12341234`, and you can configure tarzan to use a custom one using the `--secret` flag, i.e.:
+
+```
+tarzan --secret mySecret -p 80
+```
+
+Or ('./tarzan' is set as a `ENTRYPOINT` in the Docker image):
+
+```
+docker run -d -p 80:80 tarzan --secret mySecret
+```
+
+Now when you push code to the `master` branch, your image will automatically be rebuilt and pushed to Docker Hub.  By default, `tarzan` assumes that you have the same Docker Hub username as your Github username, but you can specify a different one using `--hub-name`: 
+
+```
+tarzan --hub-name myalias -p 80
+```
+
+Tarzan runs using the build cache, so this process is relatively speedy and will work with as many images/repos as your disk has space for.  
+
+Naturally, the beefier that your server is, the faster the builds will run, and the fatter that your pipes are, the faster images will get moved to and fro `(Git|Docker) Hub`.
+
+As noted in the FAQ, you can also use `fig` to bootstrap your own version of the registry running alongside `tarzan` (using the `--local-registry` option) in case you want to use that instead of Docker Hub to push and pull images from. 
 
 # Working on `tarzan`
 
