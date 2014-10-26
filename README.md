@@ -11,7 +11,7 @@ tarzan
 
 However, there is a big problem incorporating Automated Builds in a real-life workflow in their current form. 
 
-- Because Docker's build robot runs Automated Builds using the `--no-cache` option (because the infrastructure costs of not doing so would be prohibitive), all of the image layers are created from scratch each time.  
+- Because Docker's build robot runs Automated Builds using the `--no-cache` option (the infrastructure costs of not doing so would be prohibitive), all of the image layers are created from scratch each time.  
 - This ends up in an Automated Build process which could take ten minutes or more (for an operation which would take seconds locally) and does not use the [Docker build cache](http://thenewstack.io/understanding-the-docker-cache-for-faster-builds/) (one of the best, most oft-cited features of `docker build`) at all.
 - Because the layers are completely new, Docker's build robot pushes _all new layers_ when it pushes the built image back to Docker Hub, slowing the Automated Build down even more (the familiar `"image layer already exists, skipping"` message is nowhere to be found).
 - When end users go to `docker pull` the image built using an Automated Build, they _always_ get new layers even if they have pulled that same image before.  This means that even if you only changed one character in one line of source code, you will most likely have to pull down anywhere from 80 megabytes to a gigabyte or more of Docker image layers.  This makes Automated Builds look very unattractive for real production deployments.
