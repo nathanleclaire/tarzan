@@ -3760,7 +3760,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 }
 .navbar {
   position: relative;
-  min-height: 45px;
+  min-height: 36px;
   margin-bottom: 21px;
   border: 1px solid transparent;
 }
@@ -6509,12 +6509,12 @@ ul.nav {
     display: inline;
 }
 
-.asciicast-container {
-    margin-bottom: -28px;
+.asciicast {
+    margin-top: 15px !important;
 }
 
 .powered {
-    font-style: italic;
+    font-style: italic !important;
 }
 
 iframe {
