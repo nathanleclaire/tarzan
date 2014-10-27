@@ -6518,6 +6518,8 @@ ul.nav {
 }
 
 iframe {
-    width: 100%;
-    margin: 5px 0px;
+    width: 100% !important;
+    margin-bottom: 5px !important;
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
