@@ -59,13 +59,13 @@ On Github, click on "Settings" (the bottom-most element) in the right hand panel
 
 ![](/static/img/webhooks.png)
 
-Click the "Add webhook" button, verify your identity, and paste the IP address of your `tarzan` server at the `/build` endpoint in the URL box.  The default secret is `12341234`, and you can configure tarzan to use a custom one using the `--secret` flag, i.e.:
+Click the "Add webhook" button, verify your identity, and paste the IP address of your `tarzan` server at the `/build` endpoint in the URL box.  If you like, you can also choose a secret (to prevent spamming of your webhook endpoint) and pass it to `tarzan` with the `--secret` option:
 
 ```
 tarzan --secret mySecret -p 80
 ```
 
-Or ('./tarzan' is set as a `ENTRYPOINT` in the Docker image):
+Or (`tarzan` is set as a `ENTRYPOINT` in the Docker image):
 
 ```
 docker run -d -p 80:80 tarzan --secret mySecret
@@ -81,7 +81,7 @@ Tarzan runs using the build cache, so this process is relatively speedy and will
 
 Naturally, the beefier that your server is, the faster the builds will run, and the fatter that your pipes are, the faster images will get moved to and fro `(Git|Docker) Hub`.
 
-As noted in the FAQ, you can also use `fig` to bootstrap your own version of the registry running alongside `tarzan` (using the `--local-registry` option) in case you want to use that instead of Docker Hub to push and pull images from. 
+As noted in the FAQ, you can also use `fig` to bootstrap your own version of the registry running alongside `tarzan` (using the `--alt-registry` option) in case you want to use that instead of Docker Hub to push and pull images from. 
 
 # Working on `tarzan`
 
