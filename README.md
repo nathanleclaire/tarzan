@@ -104,7 +104,7 @@ Yes and no.  Docker Hub does not allow users to push to automated builds manuall
 
 Yes.  Provided in this repository is a `fig.yml` file which will allow you to run `fig up` in the project's directory and bootstrap an instance of `tarzan` running alongside a local instance of the [Docker open-source registry](https://github.com/docker/docker-registry) as a backend.  That way, you can also push and pull images from the same host where you are running `tarzan` using the Docker `image.location.com/imagename` format.
 
-#### Q: What do I do if my system's Docker binary is called `'docker.io'` instead of `docker`?
+#### Q: What do I do if my system's Docker binary is called `docker.io` instead of `docker`?
 
 Simply use the `--docker-binary-name` flag:
 
