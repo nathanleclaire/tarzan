@@ -45,7 +45,7 @@ As mentioned in the next section, `tarzan` is also available to run in a Docker 
 
 # Getting Started
 
-First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
+First you should get a virtual private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
 
 ![](/static/img/digitalocean.png)
 
