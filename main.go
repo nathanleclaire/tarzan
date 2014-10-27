@@ -61,11 +61,12 @@ func main() {
 	homeDir := os.Getenv("HOME")
 	if _, err := os.Stat(fmt.Sprintf("%s/.dockercfg", homeDir)); err != nil {
 		if os.IsNotExist(err) {
+			log.Warning("Detected no Docker Hub login.  Please log in now.")
 			cmd := exec.Command("docker", "login")
 			cmd.Stdin = os.Stdin
 			cmd.Stdout = os.Stdout
 			cmd.Stderr = os.Stderr
-			if err := exec.Command("docker", "login").Run(); err != nil {
+			if err := cmd.Run(); err != nil {
 				fmt.Fprintln(os.Stderr, "Error running docker login")
 				os.Exit(1)
 			}
