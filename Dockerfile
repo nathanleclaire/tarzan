@@ -9,5 +9,6 @@ add ./Godeps/_workspace/src /go/src
 # add src and setup for work on the project
 add . /go/src/github.com/nathanleclaire/tarzan
 workdir /go/src/github.com/nathanleclaire/tarzan
+run go build
 
-cmd ["go", "build"]
+entrypoint ["./tarzan"]

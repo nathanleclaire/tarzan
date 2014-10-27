@@ -6,7 +6,7 @@ default: dockerbuild
 
 dockerbuild: clean
 	docker build -t $(DOCKER_IMAGE) .
-	docker run --name $(DOCKER_CONTAINER) $(DOCKER_IMAGE) 
+	docker run --name $(DOCKER_CONTAINER) --entrypoint true $(DOCKER_IMAGE)
 	docker cp $(DOCKER_CONTAINER):$(DOCKER_SRC_PATH)/tarzan .
 	docker rm $(DOCKER_CONTAINER)
 
