@@ -47,7 +47,7 @@ As mentioned in the next section, `tarzan` is also available to run in a Docker 
 
 First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
 
-![](/static/img/createdroplet.png)
+![](/static/img/digitalocean.png)
 
 Alternatively, if you just want to try `tarzan` out the "fast and dirty" way, you could use a proxy tunneling service such as the excellent [ngrok](http://ngrok.com) and run it locally on your computer.
 
