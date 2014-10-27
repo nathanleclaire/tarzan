@@ -35,7 +35,7 @@
 <h1>tarzan</h1>
 <h3><i>Self-hosted Automated Docker Builds that Run Rather Fast</i></h3>
 
-<p><img src="/static/img/tarzan.jpg" alt="king of the apes" />
+<p><img src="/tarzan/static/img/tarzan.jpg" alt="king of the apes" />
 <div class="asciicast-container">
 <script type="text/javascript" src="https://asciinema.org/a/13278.js" id="asciicast-13278" async></script>
 </div>
@@ -80,7 +80,7 @@ curl get.docker.com | sudo sh
 
 <p>First you should get a virtual private server of the appropriate size (a small server at, say, <a href="http://digitalocean.com">Digital Ocean</a> will probably do nicely to start - they have a built-in Docker image as well).</p>
 
-<p><img src="/static/img/digitalocean.png" alt="" />
+<p><img src="/tarzan/static/img/digitalocean.png" alt="" />
 </p>
 
 <p>Alternatively, if you just want to try <code>tarzan</code> out the &ldquo;fast and dirty&rdquo; way, you could use a proxy tunneling service such as the excellent <a href="http://ngrok.com">ngrok</a> and run it locally on your computer.</p>
@@ -98,7 +98,7 @@ curl get.docker.com | sudo sh
 
 <p>On Github, click on &ldquo;Settings&rdquo; (the bottom-most element) in the right hand panel, then click on &ldquo;Webhooks &amp; Services&rdquo;.</p>
 
-<p><img src="/static/img/webhooks.png" alt="" />
+<p><img src="/tarzan/static/img/webhooks.png" alt="" />
 </p>
 
 <p>Click the &ldquo;Add webhook&rdquo; button, verify your identity, and paste the IP address of your <code>tarzan</code> server at the <code>/build</code> endpoint in the URL box.  If you like, you can also choose a secret (to prevent spamming of your webhook endpoint) and pass it to <code>tarzan</code> with the <code>--secret</code> option:</p>
