@@ -1,7 +1,12 @@
 {
-	"ImportPath": "nathanleclaire/tarzan",
+	"ImportPath": "github.com/nathanleclaire/tarzan",
 	"GoVersion": "go1.2.1",
 	"Deps": [
+		{
+			"ImportPath": "github.com/codegangsta/cli",
+			"Comment": "1.2.0-26-gf7ebb76",
+			"Rev": "f7ebb761e83e21225d1d8954fde853bf8edd46c4"
+		},
 		{
 			"ImportPath": "github.com/codegangsta/negroni",
 			"Comment": "v0.1-32-gc64702c",
