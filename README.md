@@ -36,7 +36,7 @@ curl https://github.com/nathanleclaire/tarzan/releases/v1.0/binary | sudo tee /u
 
 # Getting Started
 
-1. First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
+First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
 
 ![](/static/img/createdroplet.png)
 
