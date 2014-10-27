@@ -41,6 +41,8 @@ sudo apt-get install -y git-core
 curl get.docker.com | sudo sh
 ```
 
+As mentioned in the next section, `tarzan` is also available to run in a Docker container.
+
 # Getting Started
 
 First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
