@@ -28,7 +28,7 @@ type GithubPushEventPayload struct {
 }
 
 var log = logging.MustGetLogger("streamLog")
-var format = "%{color}%{time:15:04:05} ▶ %{color:reset} %{message}"
+var format = "%{color}%{time:15:04:05} => %{color:reset} %{message}"
 
 func streamCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
