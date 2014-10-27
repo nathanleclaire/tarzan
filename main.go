@@ -86,13 +86,19 @@ func main() {
 			Value: "",
 			Usage: "specify a username on Docker Hub which is different than your Github handle",
 		},
+		cli.StringFlag{
+			Name:  "docker-binary-name",
+			Value: "docker",
+			Usage: "specify the docker binary name (if it is not docker in $PATH)",
+		},
 	}
 
 	app.Action = func(c *cli.Context) {
+		dockerBinary := c.String("docker-binary-name")
 		if _, err := os.Stat(fmt.Sprintf("%s/.dockercfg", homeDir)); err != nil {
 			if os.IsNotExist(err) {
 				log.Warning("Detected no Docker Hub login.  Please log in now.")
-				cmd := exec.Command("docker", "login")
+				cmd := exec.Command(dockerBinary, "login")
 				cmd.Stdin = os.Stdin
 				cmd.Stdout = os.Stdout
 				cmd.Stderr = os.Stderr
@@ -151,7 +157,7 @@ func main() {
 				}
 
 				fmt.Println("Building docker image")
-				err := streamCommand("docker", "build", "-t", namespacedImage, ".")
+				err := streamCommand(dockerBinary, "build", "-t", namespacedImage, ".")
 				if err != nil {
 					fmt.Fprintln(os.Stderr, "Error building docker image for", namespacedImage, ":", err)
 					r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
@@ -166,7 +172,7 @@ func main() {
 					registryName = "Docker Hub"
 				}
 				fmt.Println(fmt.Sprintf("Pushing image back to specified registry (%s)...", registryName))
-				err = streamCommand("docker", "push", namespacedImage)
+				err = streamCommand(dockerBinary, "push", namespacedImage)
 				if err != nil {
 					fmt.Fprintln(os.Stderr, "Error pushing docker image for", namespacedImage, ":", err)
 					r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
