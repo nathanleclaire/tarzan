@@ -127,6 +127,7 @@ func main() {
 					} else {
 						fmt.Fprintln(os.Stderr, "Error stat-ing directory", repoPath, ":", err)
 					}
+					os.Chdir(repoPath)
 				} else {
 					os.Chdir(repoPath)
 					fmt.Println("Pulling existing repository")
@@ -134,50 +135,49 @@ func main() {
 						fmt.Fprintln(os.Stderr, "Error pulling git repository:", err)
 						r.JSON(w, http.StatusInternalServerError, "")
 					}
+				}
 
-					namespacedImage := ""
-					splitImage := strings.Split(githubFullName, "/")
-					imageBase := splitImage[len(splitImage)-1]
-					if c.String("hub-name") == "" {
-						if c.String("alt-registry") == "" {
-							namespacedImage = githubFullName
-						} else {
-							namespacedImage = fmt.Sprintf("%s/%s", c.String("alt-registry"), imageBase)
-						}
+				namespacedImage := ""
+				splitImage := strings.Split(githubFullName, "/")
+				imageBase := splitImage[len(splitImage)-1]
+				if c.String("hub-name") == "" {
+					if c.String("alt-registry") == "" {
+						namespacedImage = githubFullName
 					} else {
-						namespacedImage = fmt.Sprintf("%s/%s", c.String("hub-name"), imageBase)
+						namespacedImage = fmt.Sprintf("%s/%s", c.String("alt-registry"), imageBase)
 					}
+				} else {
+					namespacedImage = fmt.Sprintf("%s/%s", c.String("hub-name"), imageBase)
+				}
 
-					fmt.Println("Building docker image")
-					err := streamCommand("docker", "build", "-t", namespacedImage, ".")
-					if err != nil {
-						fmt.Fprintln(os.Stderr, "Error building docker image for", namespacedImage, ":", err)
-						r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-							"Error": err,
-						})
-					}
+				fmt.Println("Building docker image")
+				err := streamCommand("docker", "build", "-t", namespacedImage, ".")
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "Error building docker image for", namespacedImage, ":", err)
+					r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+						"Error": err,
+					})
+				}
 
-					registryName := ""
-					if c.String("alt-registry") != "" {
-						registryName = c.String("alt-registry")
-					} else {
-						registryName = "Docker Hub"
-					}
-					fmt.Println(fmt.Sprintf("Pushing image back to specified registry (%s)...", registryName))
-					err = streamCommand("docker", "push", namespacedImage)
-					if err != nil {
-						fmt.Fprintln(os.Stderr, "Error pushing docker image for", namespacedImage, ":", err)
-						r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-							"Error": err,
-						})
-					}
+				registryName := ""
+				if c.String("alt-registry") != "" {
+					registryName = c.String("alt-registry")
+				} else {
+					registryName = "Docker Hub"
+				}
+				fmt.Println(fmt.Sprintf("Pushing image back to specified registry (%s)...", registryName))
+				err = streamCommand("docker", "push", namespacedImage)
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "Error pushing docker image for", namespacedImage, ":", err)
+					r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+						"Error": err,
+					})
 				}
 			} else {
 				r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
 					"Error": "Secret from payload was invalid",
 				})
 			}
-
 			r.JSON(w, http.StatusOK, "")
 		}).Methods("POST")
 
