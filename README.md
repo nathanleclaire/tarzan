@@ -34,6 +34,8 @@ Or install the (64bit Linux) binary directly using something like:
 curl https://github.com/nathanleclaire/tarzan/releases/v1.0/binary | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x $(which tarzan) 
 ```
 
+Make sure you have `docker` and `git` binaries installed as well.
+
 # Getting Started
 
 First you should get a virutal private server of the appropriate size (a small server at, say, [Digital Ocean](http://digitalocean.com) will probably do nicely to start - they have a built-in Docker image as well).
@@ -101,6 +103,14 @@ Yes and no.  Docker Hub does not allow users to push to automated builds manuall
 #### Q: Can I run this using my own registry instead of using Docker Hub as a backend?
 
 Yes.  Provided in this repository is a `fig.yml` file which will allow you to run `fig up` in the project's directory and bootstrap an instance of `tarzan` running alongside a local instance of the [Docker open-source registry](https://github.com/docker/docker-registry) as a backend.  That way, you can also push and pull images from the same host where you are running `tarzan` using the Docker `image.location.com/imagename` format.
+
+#### Q: What do I do if my system's Docker binary is called `'docker.io'` instead of `docker`?
+
+Simply use the `--docker-binary-name` flag:
+
+```
+tarzan --docker-binary-name docker.io -p 80
+```
 
 #### Q: Why is the project called `tarzan`?
 
