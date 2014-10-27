@@ -112,6 +112,10 @@ Simply use the `--docker-binary-name` flag:
 tarzan --docker-binary-name docker.io -p 80
 ```
 
+#### Q: Is there a shiny GUI or web interface so I can see the status of my builds?
+
+For now, STDOUT/STDERR logging is what `tarzan` offers.  Eventually I want to expand it to have a (mostly pretty minimalistic, but useful) web interface.
+
 #### Q: Why is the project called `tarzan`?
 
 Partially because it is meant to be a wild and feral tool, refusing to be tamed by the confines of civilazation, but there is also a secret meaning and I will buy you a beer, coffee, cookie etc. if you figure it out.
