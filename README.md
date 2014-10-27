@@ -46,7 +46,7 @@ Install `tarzan` on the worker box and start it.  Make sure that the port you're
 
 ```
 tarzan -p 80
-[log] Negroni listening on port 80...
+[negroni] listening on :80
 ```
 
 Tarzan is also available to run as a Docker container (built, of course, using `tarzan`):
