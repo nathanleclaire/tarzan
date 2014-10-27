@@ -119,6 +119,10 @@ Simply use the `--docker-binary-name` flag:
 tarzan --docker-binary-name docker.io -p 80
 ```
 
+#### Q: Will this work with Docker Hub private repositories?
+
+Yep!  As long as the user you've authenticated as can push to the corresponding private Docker Hub repositories, `tarzan` will be able to push to them.  The same caveats about true Automated Builds still apply of course.
+
 #### Q: Is there a shiny GUI or web interface so I can see the status of my builds?
 
 For now, STDOUT/STDERR logging is what `tarzan` offers.  Eventually I want to expand it to have a (mostly pretty minimalistic, but useful) web interface.
