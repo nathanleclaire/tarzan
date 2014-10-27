@@ -34,7 +34,12 @@ Or install the (64bit Linux) binary directly using something like:
 curl https://github.com/nathanleclaire/tarzan/releases/v1.0/binary | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x $(which tarzan) 
 ```
 
-Make sure you have `docker` and `git` binaries installed as well.
+Make sure you have `docker` and `git` binaries installed as well.  On Debian based systems, the following should work:
+
+```
+sudo apt-get install -y git-core
+curl get.docker.com | sudo sh
+```
 
 # Getting Started
 
