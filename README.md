@@ -31,7 +31,7 @@ go get github.com/nathanleclaire/tarzan
 Or install the (64bit Linux) binary directly using something like:
 
 ```
-curl https://github.com/nathanleclaire/tarzan/releases/download/v0.0.1/tarzan | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x $(which tarzan) 
+curl https://github.com/nathanleclaire/tarzan/releases/download/v0.0.1/tarzan | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x /usr/local/bin/tarzan
 ```
 
 Make sure you have `docker` and `git` binaries installed as well.  On Debian based systems, the following should work:
@@ -126,6 +126,10 @@ Yep!  As long as the user you've authenticated as can push to the corresponding 
 #### Q: Is there a shiny GUI or web interface so I can see the status of my builds?
 
 For now, STDOUT/STDERR logging is what `tarzan` offers.  Eventually I want to expand it to have a (mostly pretty minimalistic, but useful) web interface.
+
+#### Q: Can I build [docker/docker](https://github.com/docker/docker) with it and do all kinds of weird stuff that Docker Hub won't let me do?
+
+Yuuuuuuup!  It's your own server, do whatever you want.
 
 #### Q: Why is the project called `tarzan`?
 
