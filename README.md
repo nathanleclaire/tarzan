@@ -16,7 +16,7 @@ However, there is a big problem incorporating Automated Builds in a real-life wo
 - Because the layers are completely new, Docker's build robot pushes _all new layers_ when it pushes the built image back to Docker Hub, slowing the Automated Build down even more (the familiar `"image layer already exists, skipping"` message is nowhere to be found).
 - When end users go to `docker pull` the image built using an Automated Build, they _always_ get new layers even if they have pulled that same image before.  This means that even if you only changed one character in one line of source code, you will most likely have to pull down anywhere from 80 megabytes to a gigabyte or more of Docker image layers.  This makes Automated Builds look very unattractive for real production deployments.
 
-Therefore, it would be highly preferable to have a automated build robot which runs builds using the Docker cache.
+Therefore, it would be highly preferable to have an automated build robot which runs builds using the Docker cache.
 
 `tarzan` is a naive implementation of such an automated build robot, written in [Go](http://golang.org).  I say it is "naive" because it doesn't attempt to do anything particularly clever (largely it shells out to `docker` commands) and is inherently meant to run on a single host (though this may change in the future).  However, it could still be turn out to be a useful tool for automating Docker image re-builds and deploys.
 
