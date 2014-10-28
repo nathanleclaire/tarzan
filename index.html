@@ -51,7 +51,7 @@
 <li>When end users go to <code>docker pull</code> the image built using an Automated Build, they <em>always</em> get new layers even if they have pulled that same image before.  This means that even if you only changed one character in one line of source code, you will most likely have to pull down anywhere from 80 megabytes to a gigabyte or more of Docker image layers.  This makes Automated Builds look very unattractive for real production deployments.</li>
 </ul>
 
-<p>Therefore, it would be highly preferable to have a automated build robot which runs builds using the Docker cache.</p>
+<p>Therefore, it would be highly preferable to have an automated build robot which runs builds using the Docker cache.</p>
 
 <p><code>tarzan</code> is a naive implementation of such an automated build robot, written in <a href="http://golang.org">Go</a>.  I say it is &ldquo;naive&rdquo; because it doesn&rsquo;t attempt to do anything particularly clever (largely it shells out to <code>docker</code> commands) and is inherently meant to run on a single host (though this may change in the future).  However, it could still be turn out to be a useful tool for automating Docker image re-builds and deploys.</p>
 
@@ -64,7 +64,7 @@
 
 <p>Or install the (64bit Linux) binary directly using something like:</p>
 
-<pre><code>curl https://github.com/nathanleclaire/tarzan/releases/v1.0/binary | sudo tee /usr/local/bin/tarzan 2&gt;&amp;1&gt;/dev/null; chmod +x $(which tarzan)
+<pre><code>curl https://github.com/nathanleclaire/tarzan/releases/download/v0.0.1/tarzan | sudo tee /usr/local/bin/tarzan 2&gt;&amp;1&gt;/dev/null; chmod +x /usr/local/bin/tarzan
 </code></pre>
 
 <p>Make sure you have <code>docker</code> and <code>git</code> binaries installed as well.  On Debian based systems, the following should work:</p>
@@ -79,7 +79,7 @@ curl get.docker.com | sudo sh
 
 <p>First you should get a virtual private server of the appropriate size (a small server at, say, <a href="http://digitalocean.com">Digital Ocean</a> will probably do nicely to start - they have a built-in Docker image as well).</p>
 
-<p><img src="/tarzan/static/img/digitalocean.png" alt="" />
+<p><img src="/static/img/digitalocean.png" alt="" />
 </p>
 
 <p>Alternatively, if you just want to try <code>tarzan</code> out the &ldquo;fast and dirty&rdquo; way, you could use a proxy tunneling service such as the excellent <a href="http://ngrok.com">ngrok</a> and run it locally on your computer.</p>
@@ -92,12 +92,17 @@ curl get.docker.com | sudo sh
 
 <p>Tarzan is also available to run as a Docker container (built, of course, using <code>tarzan</code>):</p>
 
-<pre><code>docker run -d -p 80:3000 nathanleclaire/tarzan
+<pre><code>docker run -d -p 80:3000 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $HOME/.dockercfg:/root/.dockercfg \
+    -v $(which docker):/usr/bin/docker \
+    nathanleclaire/tarzan \
+        -p 80
 </code></pre>
 
 <p>On Github, click on &ldquo;Settings&rdquo; (the bottom-most element) in the right hand panel, then click on &ldquo;Webhooks &amp; Services&rdquo;.</p>
 
-<p><img src="/tarzan/static/img/webhooks.png" alt="" />
+<p><img src="/static/img/webhooks.png" alt="" />
 </p>
 
 <p>Click the &ldquo;Add webhook&rdquo; button, verify your identity, and paste the IP address of your <code>tarzan</code> server at the <code>/build</code> endpoint in the URL box.  If you like, you can also choose a secret (to prevent spamming of your webhook endpoint) and pass it to <code>tarzan</code> with the <code>--secret</code> option:</p>
@@ -107,7 +112,13 @@ curl get.docker.com | sudo sh
 
 <p>Or (<code>tarzan</code> is set as a <code>ENTRYPOINT</code> in the Docker image):</p>
 
-<pre><code>docker run -d -p 80:80 tarzan --secret mySecret
+<pre><code>docker run -d -p 80:3000 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $HOME/.dockercfg:/root/.dockercfg \
+    -v $(which docker):/usr/bin/docker \
+    nathanleclaire/tarzan \
+        --secret mySecret \
+        -p 80
 </code></pre>
 
 <p>Now when you push code to the <code>master</code> branch, your image will automatically be rebuilt and pushed to Docker Hub.  By default, <code>tarzan</code> assumes that you have the same Docker Hub username as your Github username, but you can specify a different one using <code>--hub-name</code>:</p>
@@ -156,6 +167,10 @@ curl get.docker.com | sudo sh
 <h4>Q: Is there a shiny GUI or web interface so I can see the status of my builds?</h4>
 
 <p>For now, STDOUT/STDERR logging is what <code>tarzan</code> offers.  Eventually I want to expand it to have a (mostly pretty minimalistic, but useful) web interface.</p>
+
+<h4>Q: Can I build <a href="https://github.com/docker/docker">docker/docker</a> with it and do all kinds of weird stuff that Docker Hub won&rsquo;t let me do?</h4>
+
+<p>Yuuuuuuup!  It&rsquo;s your own server, do whatever you want.</p>
 
 <h4>Q: Why is the project called <code>tarzan</code>?</h4>
 

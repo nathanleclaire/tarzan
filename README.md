@@ -103,7 +103,7 @@ Naturally, the beefier that your server is, the faster the builds will run, and 
 
 As noted in the FAQ, you can also use `fig` to bootstrap your own version of the registry running alongside `tarzan` (using the `--alt-registry` option) in case you want to use that instead of Docker Hub to push and pull images from. 
 
-# Working on `tarzan`
+# Working on tarzan
 
 If you want to hack on `tarzan` simply:
 
