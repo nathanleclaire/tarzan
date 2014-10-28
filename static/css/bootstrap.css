@@ -6511,6 +6511,7 @@ ul.nav {
 
 .asciicast {
     margin-top: 15px !important;
+    margin-bottom: 0px !important;
 }
 
 .powered {
@@ -6522,4 +6523,20 @@ iframe {
     margin-bottom: 5px !important;
     margin-left: 0px !important;
     margin-right: 0px !important;
+}
+
+.main-header {
+    font-size: 86px;
+    font-weight: 800;
+    letter-spacing: 19px;
+    text-align: center;
+    margin-top: 16px;
+}
+
+.sub-header {
+    text-align: center;
+    font-size: 22px;
+    font-style: italic;
+    margin-bottom: -6px;
+    margin-top: -13px;
 }
