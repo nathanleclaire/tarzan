@@ -96,8 +96,7 @@ curl get.docker.com | sudo sh
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $HOME/.dockercfg:/root/.dockercfg \
     -v $(which docker):/usr/bin/docker \
-    nathanleclaire/tarzan \
-        -p 80
+    nathanleclaire/tarzan
 </code></pre>
 
 <p>On Github, click on &ldquo;Settings&rdquo; (the bottom-most element) in the right hand panel, then click on &ldquo;Webhooks &amp; Services&rdquo;.</p>
@@ -117,8 +116,7 @@ curl get.docker.com | sudo sh
     -v $HOME/.dockercfg:/root/.dockercfg \
     -v $(which docker):/usr/bin/docker \
     nathanleclaire/tarzan \
-        --secret mySecret \
-        -p 80
+        --secret mySecret
 </code></pre>
 
 <p>Now when you push code to the <code>master</code> branch, your image will automatically be rebuilt and pushed to Docker Hub.  By default, <code>tarzan</code> assumes that you have the same Docker Hub username as your Github username, but you can specify a different one using <code>--hub-name</code>:</p>

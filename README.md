@@ -65,8 +65,7 @@ docker run -d -p 80:3000 \
     -v /var/run/docker.sock:/var/run/docker.sock \
     -v $HOME/.dockercfg:/root/.dockercfg \
     -v $(which docker):/usr/bin/docker \
-    nathanleclaire/tarzan \
-        -p 80
+    nathanleclaire/tarzan
 ```
 
 On Github, click on "Settings" (the bottom-most element) in the right hand panel, then click on "Webhooks & Services".
@@ -87,8 +86,7 @@ docker run -d -p 80:3000 \
     -v $HOME/.dockercfg:/root/.dockercfg \
     -v $(which docker):/usr/bin/docker \
     nathanleclaire/tarzan \
-        --secret mySecret \
-        -p 80
+        --secret mySecret
 ```
 
 Now when you push code to the `master` branch, your image will automatically be rebuilt and pushed to Docker Hub.  By default, `tarzan` assumes that you have the same Docker Hub username as your Github username, but you can specify a different one using `--hub-name`: 
