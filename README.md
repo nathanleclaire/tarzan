@@ -61,7 +61,11 @@ tarzan -p 80
 Tarzan is also available to run as a Docker container (built, of course, using `tarzan`):
 
 ```
-docker run -d -p 80:3000 nathanleclaire/tarzan
+docker run -d -p 80:3000 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $(which docker):/usr/bin/docker \
+    nathanleclaire/tarzan \
+        -p 80
 ```
 
 On Github, click on "Settings" (the bottom-most element) in the right hand panel, then click on "Webhooks & Services".
@@ -77,7 +81,12 @@ tarzan --secret mySecret -p 80
 Or (`tarzan` is set as a `ENTRYPOINT` in the Docker image):
 
 ```
-docker run -d -p 80:80 tarzan --secret mySecret
+docker run -d -p 80:3000 \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v $(which docker):/usr/bin/docker \
+    nathanleclaire/tarzan \
+        --secret mySecret \
+        -p 80
 ```
 
 Now when you push code to the `master` branch, your image will automatically be rebuilt and pushed to Docker Hub.  By default, `tarzan` assumes that you have the same Docker Hub username as your Github username, but you can specify a different one using `--hub-name`: 
