@@ -31,7 +31,7 @@ go get github.com/nathanleclaire/tarzan
 Or install the (64bit Linux) binary directly using something like:
 
 ```
-curl https://github.com/nathanleclaire/tarzan/releases/download/v0.0.1/tarzan | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x /usr/local/bin/tarzan
+curl -SsL https://github.com/nathanleclaire/tarzan/releases/download/v0.0.1/tarzan | sudo tee /usr/local/bin/tarzan 2>&1>/dev/null; chmod +x /usr/local/bin/tarzan
 ```
 
 Make sure you have `docker` and `git` binaries installed as well.  On Debian based systems, the following should work:
