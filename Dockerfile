@@ -1,5 +1,6 @@
 from golang:1.3
 
+# foobar
 run apt-get update && apt-get install -y git-core cmake
 run apt-get install -y pkg-config
 
