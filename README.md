@@ -1,9 +1,7 @@
-_BIG FAT DISCLAIMER_: This Readme mentions some things which do not exist yet.  `tarzan` is still a work in progress and is not meant to leak to HN etc. yet.
-
 tarzan
 ======
 
-### Self-hosted Docker Automated Builds that Run Rather Fast
+### Self-hosted Automated Docker Builds that Run Rather Fast
 
 ![king of the apes](https://github.com/nathanleclaire/tarzan/blob/master/static/img/tarzan.jpg)
 
