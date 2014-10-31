@@ -55,6 +55,86 @@ func streamCommand(name string, args ...string) error {
 	return nil
 }
 
+func BuildHookReceiver(c *cli.Context, r *render.Render, dockerBinary string) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		var (
+			payload GithubPushEventPayload
+		)
+		decoder := json.NewDecoder(req.Body)
+		err := decoder.Decode(&payload)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error decoding Github push payload:", err)
+		}
+		spew.Dump(payload)
+		if c.String("secret") == "" || payload.Hook.Config.Secret == c.String("secret") {
+			githubFullName := payload.Repository.FullName
+			repoPath := fmt.Sprintf("./repos/%s", githubFullName)
+			repoUrl := payload.Repository.HtmlUrl
+			if _, err := os.Stat(repoPath); err != nil {
+				if os.IsNotExist(err) {
+					fmt.Println("Executing command", "git clone --recursive", repoUrl, repoPath)
+					if err := exec.Command("git", "clone", "--recursive", repoUrl, repoPath).Run(); err != nil {
+						fmt.Fprintln(os.Stderr, "Error cloning git repository:", err)
+					}
+				} else {
+					fmt.Fprintln(os.Stderr, "Error stat-ing directory", repoPath, ":", err)
+				}
+				os.Chdir(repoPath)
+			} else {
+				os.Chdir(repoPath)
+				fmt.Println("Pulling existing repository")
+				if err := exec.Command("git", "pull").Run(); err != nil {
+					fmt.Fprintln(os.Stderr, "Error pulling git repository:", err)
+					r.JSON(w, http.StatusInternalServerError, "")
+				}
+			}
+
+			namespacedImage := ""
+			splitImage := strings.Split(githubFullName, "/")
+			imageBase := splitImage[len(splitImage)-1]
+			if c.String("hub-name") == "" {
+				if c.String("alt-registry") == "" {
+					namespacedImage = githubFullName
+				} else {
+					namespacedImage = fmt.Sprintf("%s/%s", c.String("alt-registry"), imageBase)
+				}
+			} else {
+				namespacedImage = fmt.Sprintf("%s/%s", c.String("hub-name"), imageBase)
+			}
+
+			fmt.Println("Building docker image")
+			err := streamCommand(dockerBinary, "build", "-t", namespacedImage, ".")
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Error building docker image for", namespacedImage, ":", err)
+				r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+					"Error": err,
+				})
+			}
+
+			registryName := ""
+			if c.String("alt-registry") != "" {
+				registryName = c.String("alt-registry")
+			} else {
+				registryName = "Docker Hub"
+			}
+
+			fmt.Println(fmt.Sprintf("Pushing image back to specified registry (%s)...", registryName))
+			err = streamCommand(dockerBinary, "push", namespacedImage)
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Error pushing docker image for", namespacedImage, ":", err)
+				r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+					"Error": err,
+				})
+			}
+		} else {
+			r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
+				"Error": "Secret from payload was invalid",
+			})
+		}
+		r.JSON(w, http.StatusOK, "")
+	}
+}
+
 func main() {
 	logBackend := logging.NewLogBackend(os.Stderr, "", 0)
 	logging.SetBackend(logBackend)
@@ -110,87 +190,11 @@ func main() {
 		}
 		r := render.New(render.Options{})
 		router := mux.NewRouter()
-		router.HandleFunc("/build", func(w http.ResponseWriter, req *http.Request) {
-			var (
-				payload GithubPushEventPayload
-			)
-			decoder := json.NewDecoder(req.Body)
-			err := decoder.Decode(&payload)
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "Error decoding Github push payload:", err)
-			}
-			spew.Dump(payload)
-			if c.String("secret") == "" || payload.Hook.Config.Secret == c.String("secret") {
-				githubFullName := payload.Repository.FullName
-				repoPath := fmt.Sprintf("./repos/%s", githubFullName)
-				repoUrl := payload.Repository.HtmlUrl
-				if _, err := os.Stat(repoPath); err != nil {
-					if os.IsNotExist(err) {
-						fmt.Println("Executing command", "git clone --recursive", repoUrl, repoPath)
-						if err := exec.Command("git", "clone", "--recursive", repoUrl, repoPath).Run(); err != nil {
-							fmt.Fprintln(os.Stderr, "Error cloning git repository:", err)
-						}
-					} else {
-						fmt.Fprintln(os.Stderr, "Error stat-ing directory", repoPath, ":", err)
-					}
-					os.Chdir(repoPath)
-				} else {
-					os.Chdir(repoPath)
-					fmt.Println("Pulling existing repository")
-					if err := exec.Command("git", "pull").Run(); err != nil {
-						fmt.Fprintln(os.Stderr, "Error pulling git repository:", err)
-						r.JSON(w, http.StatusInternalServerError, "")
-					}
-				}
-
-				namespacedImage := ""
-				splitImage := strings.Split(githubFullName, "/")
-				imageBase := splitImage[len(splitImage)-1]
-				if c.String("hub-name") == "" {
-					if c.String("alt-registry") == "" {
-						namespacedImage = githubFullName
-					} else {
-						namespacedImage = fmt.Sprintf("%s/%s", c.String("alt-registry"), imageBase)
-					}
-				} else {
-					namespacedImage = fmt.Sprintf("%s/%s", c.String("hub-name"), imageBase)
-				}
-
-				fmt.Println("Building docker image")
-				err := streamCommand(dockerBinary, "build", "-t", namespacedImage, ".")
-				if err != nil {
-					fmt.Fprintln(os.Stderr, "Error building docker image for", namespacedImage, ":", err)
-					r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-						"Error": err,
-					})
-				}
-
-				registryName := ""
-				if c.String("alt-registry") != "" {
-					registryName = c.String("alt-registry")
-				} else {
-					registryName = "Docker Hub"
-				}
-				fmt.Println(fmt.Sprintf("Pushing image back to specified registry (%s)...", registryName))
-				err = streamCommand(dockerBinary, "push", namespacedImage)
-				if err != nil {
-					fmt.Fprintln(os.Stderr, "Error pushing docker image for", namespacedImage, ":", err)
-					r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-						"Error": err,
-					})
-				}
-			} else {
-				r.JSON(w, http.StatusInternalServerError, map[string]interface{}{
-					"Error": "Secret from payload was invalid",
-				})
-			}
-			r.JSON(w, http.StatusOK, "")
-		}).Methods("POST")
+		router.HandleFunc("/build", BuildHookReceiver(c, r, dockerBinary)).Methods("POST")
 
 		n := negroni.Classic()
 		n.UseHandler(router)
 		n.Run(fmt.Sprintf(":%s", c.String("port")))
-
 	}
 
 	app.Run(os.Args)
