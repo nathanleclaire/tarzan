@@ -193,6 +193,7 @@ func main() {
 		router.HandleFunc("/build", BuildHookReceiver(c, r, dockerBinary)).Methods("POST")
 
 		n := negroni.Classic()
+		n.Use(negroni.NewStatic(http.Dir("frontend/")))
 		n.UseHandler(router)
 		n.Run(fmt.Sprintf(":%s", c.String("port")))
 	}
