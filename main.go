@@ -29,8 +29,15 @@ type GithubPushEventPayload struct {
 	} `json:"repository"`
 }
 
-var log = logging.MustGetLogger("streamLog")
-var format = "%{color}%{time:15:04:05} => %{color:reset} %{message}"
+var (
+	log         = logging.MustGetLogger("streamLog")
+	format      = "%{color}%{time:15:04:05} => %{color:reset} %{message}"
+	buildStatus = map[string]string{}
+)
+
+func loadBuildStatus() error {
+	return nil
+}
 
 func streamCommand(name string, args ...string) error {
 	cmd := exec.Command(name, args...)
@@ -135,6 +142,10 @@ func BuildHookReceiver(c *cli.Context, r *render.Render, dockerBinary string) fu
 	}
 }
 
+func StatusHandler(w http.ResponseWriter, req *http.Request) {
+
+}
+
 func main() {
 	logBackend := logging.NewLogBackend(os.Stderr, "", 0)
 	logging.SetBackend(logBackend)
@@ -175,6 +186,10 @@ func main() {
 
 	app.Action = func(c *cli.Context) {
 		dockerBinary := c.String("docker-binary-name")
+		if err := loadBuildStatus(); err != nil {
+			fmt.Fprintln(os.Stderr, "Error loading build status (did your repos/ dir get corrupted?):", err)
+			os.Exit(1)
+		}
 		if _, err := os.Stat(fmt.Sprintf("%s/.dockercfg", homeDir)); err != nil {
 			if os.IsNotExist(err) {
 				log.Warning("Detected no Docker Hub login.  Please log in now.")
@@ -191,6 +206,7 @@ func main() {
 		r := render.New(render.Options{})
 		router := mux.NewRouter()
 		router.HandleFunc("/build", BuildHookReceiver(c, r, dockerBinary)).Methods("POST")
+		router.HandleFunc("/buildList", StatusHandler).Methods("GET")
 
 		n := negroni.Classic()
 		n.Use(negroni.NewStatic(http.Dir("frontend/")))
