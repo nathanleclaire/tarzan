@@ -40,6 +40,7 @@ type AutomatedBuild struct {
 	RepoName      string
 	DockerfileUrl string
 	Status        string
+	Branches      []string
 	Layers        []Layer
 }
 
