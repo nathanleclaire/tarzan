@@ -12,6 +12,7 @@ add . /go/src/github.com/nathanleclaire/tarzan
 workdir /go/src/github.com/nathanleclaire/tarzan
 run go build
 
+# tesat again
 # run tarzan binary as non-privileged user in container
 run useradd gobuddy
 user gobuddy
