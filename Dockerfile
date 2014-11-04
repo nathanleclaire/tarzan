@@ -16,4 +16,6 @@ run go build
 run useradd gobuddy
 user gobuddy
 
+volume ["/go/src/github.com/nathanleclaire/tarzan/repos"]
+
 entrypoint ["./tarzan"]
