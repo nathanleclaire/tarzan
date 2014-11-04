@@ -61,7 +61,7 @@ Tarzan is also available to run as a Docker container (built, of course, using `
 ```
 docker run -d -p 80:3000 \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v $HOME/.dockercfg:/root/.dockercfg \
+    -v $HOME/.dockercfg:/home/gobuddy/.dockercfg \
     -v $(which docker):/usr/bin/docker \
     nathanleclaire/tarzan
 ```
@@ -76,14 +76,14 @@ Click the "Add webhook" button, verify your identity, and paste the IP address o
 tarzan --secret mySecret -p 80
 ```
 
-Or (`tarzan` is set as a `ENTRYPOINT` in the Docker image):
+Or (since `tarzan` is set as a `ENTRYPOINT` in the Docker image):
 
 ```
 docker run -d -p 80:3000 \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v $HOME/.dockercfg:/root/.dockercfg \
+    -v $HOME/.dockercfg:/home/gobuddy/.dockercfg \
     -v $(which docker):/usr/bin/docker \
-    nathanleclaire/tarzan \
+    nathanleclaire/tarzan
         --secret mySecret
 ```
 
