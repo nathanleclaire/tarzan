@@ -29,10 +29,24 @@ type GithubPushEventPayload struct {
 	} `json:"repository"`
 }
 
+type Layer struct {
+	Id      string
+	Command string
+	Size    int64
+}
+
+type AutomatedBuild struct {
+	FromImage     string
+	RepoName      string
+	DockerfileUrl string
+	Status        string
+	Layers        []Layer
+}
+
 var (
-	log         = logging.MustGetLogger("streamLog")
-	format      = "%{color}%{time:15:04:05} => %{color:reset} %{message}"
-	buildStatus = map[string]string{}
+	log           = logging.MustGetLogger("streamLog")
+	format        = "%{color}%{time:15:04:05} => %{color:reset} %{message}"
+	buildStatuses = map[string]string{}
 )
 
 func loadBuildStatus() error {
@@ -144,7 +158,11 @@ func BuildHookReceiver(c *cli.Context, r *render.Render, dockerBinary string) fu
 
 func MakeBuildListHandler(r *render.Render) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
+		var (
+			buildList = []AutomatedBuild{}
+		)
 
+		r.JSON(w, http.StatusOK, buildList)
 	}
 }
 
