@@ -12,6 +12,7 @@ add . /go/src/github.com/nathanleclaire/tarzan
 workdir /go/src/github.com/nathanleclaire/tarzan
 run go build
 
+# run tarzan binary as non-priveleged user in container
 run useradd gobuddy
 user gobuddy
 
