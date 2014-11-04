@@ -142,8 +142,10 @@ func BuildHookReceiver(c *cli.Context, r *render.Render, dockerBinary string) fu
 	}
 }
 
-func StatusHandler(w http.ResponseWriter, req *http.Request) {
+func MakeBuildListHandler(r *render.Render) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
 
+	}
 }
 
 func main() {
@@ -206,7 +208,7 @@ func main() {
 		r := render.New(render.Options{})
 		router := mux.NewRouter()
 		router.HandleFunc("/build", BuildHookReceiver(c, r, dockerBinary)).Methods("POST")
-		router.HandleFunc("/buildList", StatusHandler).Methods("GET")
+		router.HandleFunc("/buildList", MakeBuildListHandler(r)).Methods("GET")
 
 		n := negroni.Classic()
 		n.Use(negroni.NewStatic(http.Dir("frontend/")))
