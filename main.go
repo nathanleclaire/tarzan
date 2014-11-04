@@ -88,6 +88,9 @@ func BuildHookReceiver(c *cli.Context, r *render.Render, dockerBinary string) fu
 			fmt.Fprintln(os.Stderr, "Error decoding Github push payload:", err)
 		}
 		spew.Dump(payload)
+
+		// TODO: Add job to queue instead of running immediately?
+
 		if c.String("secret") == "" || payload.Hook.Config.Secret == c.String("secret") {
 			githubFullName := payload.Repository.FullName
 			repoPath := fmt.Sprintf("./repos/%s", githubFullName)
