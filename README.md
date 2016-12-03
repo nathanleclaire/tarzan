@@ -1,3 +1,7 @@
+# DEPRECATED
+
+This repository started as a good idea but I didn't have enough time or desire to work on it.  So, it's left here for historical / educational purposes, but be advised it's essentially dead code.  If anyone else wants to fork and develop / maintain it, be my guest :)
+
 tarzan
 ======
 
