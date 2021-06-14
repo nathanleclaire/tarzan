@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+        tarzan:
+                build: .
+                environment:
+                        - "WEBHOOK_SECRET=S3cret"
+                        - "DOCKERHUB_NAME=jlti"
+                        - "DOCKERHUB_PW=S3cret"
+                        - "LOG_STREAMCMD=true"
+                volumes:
+                        - "/var/run/docker.sock:/var/run/docker.sock"
+                ports:
+                        - "9876:8080"

@@ -1,22 +1,18 @@
-from golang:1.3
+FROM golang:1.16 as builder
+WORKDIR /app
+COPY go.mod go.mod
+RUN go mod download
+COPY app/ .
+RUN GCO_ENABLED=1 GOOS=linux go build -tags netgo -a -installsuffix cgo -o /app/main .
 
-run apt-get update && apt-get install -y git-core cmake
-run apt-get install -y pkg-config
 
 
-# add vendored deps
-add ./Godeps/_workspace/src /go/src
+FROM alpine:latest
 
-# add src and setup for work on the project
-add . /go/src/github.com/nathanleclaire/tarzan
-workdir /go/src/github.com/nathanleclaire/tarzan
-run go build
+WORKDIR /app
+COPY --from=builder /app/main /app/main
 
-# tesat again
-# run tarzan binary as non-privileged user in container
-run useradd gobuddy
-user gobuddy
+run apk add docker git
 
-volume ["/go/src/github.com/nathanleclaire/tarzan/repos"]
-
-entrypoint ["./tarzan"]
+expose 8080
+CMD ["/app/main"]
