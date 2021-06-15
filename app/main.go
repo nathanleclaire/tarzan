@@ -31,6 +31,10 @@ func main() {
 	}else if (os.Getenv("DOCKERHUB_PW") == ""){
 		log.Panicln("We need a passwort for hub.docker.com")
 	}
+	if (os.Getenv("DOCKERHUB_ORG") == ""){
+		log.Println("Setting DOCKERHUB_ORG to DOCKERHUB_NAME")
+		os.Setenv("DOCKERHUB_ORG", os.Getenv("DOCKERHUB_NAME"))
+	}
 
 	payloadChannel = make(chan GitHubPushEventPayload, 10)
 	go loop()

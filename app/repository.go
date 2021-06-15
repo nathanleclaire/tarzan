@@ -25,8 +25,8 @@ func releaseRepository(payload GitHubPushEventPayload) {
 	log.Printf("Tags should be available latest & %s", payload.Release.Tag_Name)
 }
 func dockerBuild(payload GitHubPushEventPayload) (error){
-	imageNameTag := fmt.Sprintf("%s/%s:%s", os.Getenv("DOCKERHUB_NAME"), payload.Repository.Name, payload.Release.Tag_Name)
-	imageNameLatest := fmt.Sprintf("%s/%s:latest", os.Getenv("DOCKERHUB_NAME"), payload.Repository.Name)
+	imageNameTag := fmt.Sprintf("%s/%s:%s", os.Getenv("DOCKERHUB_ORG"), payload.Repository.Name, payload.Release.Tag_Name)
+	imageNameLatest := fmt.Sprintf("%s/%s:latest", os.Getenv("DOCKERHUB_ORG"), payload.Repository.Name)
 	log.Printf("Building image %s and %s\n", imageNameTag, imageNameLatest)
 
 	err := streamCommand(true, "docker", "build", "--force-rm", "--pull", "--tag", imageNameTag, "--tag", imageNameLatest, fmt.Sprintf("%s#%s",payload.Repository.CloneUrl, payload.Release.Tag_Name))
@@ -36,8 +36,8 @@ func dockerBuild(payload GitHubPushEventPayload) (error){
 	return nil
 }
 func dockerPush(payload GitHubPushEventPayload) (error){
-	imageNameTag := fmt.Sprintf("%s/%s:%s", os.Getenv("DOCKERHUB_NAME"), payload.Repository.Name, payload.Release.Tag_Name)
-	imageNameLatest := fmt.Sprintf("%s/%s:latest", os.Getenv("DOCKERHUB_NAME"), payload.Repository.Name)
+	imageNameTag := fmt.Sprintf("%s/%s:%s", os.Getenv("DOCKERHUB_ORG"), payload.Repository.Name, payload.Release.Tag_Name)
+	imageNameLatest := fmt.Sprintf("%s/%s:latest", os.Getenv("DOCKERHUB_ORG"), payload.Repository.Name)
 	
 	log.Printf("Pushing image %s and %s\n", imageNameTag, imageNameLatest)
 	err := streamCommand(false, "docker", "login", "--username", os.Getenv("DOCKERHUB_NAME"), "--password", os.Getenv("DOCKERHUB_PW"))
